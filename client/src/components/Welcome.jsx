@@ -4,7 +4,6 @@ import { SiEthereum } from 'react-icons/si';
 import { BsInfoCircle } from 'react-icons/bs';
 
 import { TransactionContext } from '../context/TransactionContext';
-
 import { Loader } from '.';
 
 const companyCommonStyles =
@@ -22,11 +21,18 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-	const { connectWallet, currentAccount } = useContext(TransactionContext);
+	const { currentAccount, connectWallet, handleChange, sendTransaction, formData, isLoading } =
+		useContext(TransactionContext);
 
-	const handleSubmit = (e) => {};
+	const handleSubmit = (e) => {
+		const { addressTo, amount, keyword, message } = formData;
 
-	const handleChange = () => {};
+		e.preventDefault();
+
+		if (!addressTo || !amount || !keyword || !message) return;
+
+		sendTransaction();
+	};
 
 	return (
 		<div className='flex w-full justify-center items-center'>
@@ -68,7 +74,10 @@ const Welcome = () => {
 								</div>
 								<BsInfoCircle fontSize={17} color='#fff' />
 							</div>
-							<div></div>
+							<div>
+								<p className='text-white font-light text-sm'>{currentAccount}</p>
+								<p className='text-white font-semibold text-lg mt-1'>Ethereum</p>
+							</div>
 						</div>
 					</div>
 					<div className='p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism'>
@@ -99,7 +108,7 @@ const Welcome = () => {
 
 						<div className='h-[1px] w-full bg-gray-400 my-2' />
 
-						{false ? (
+						{isLoading ? (
 							<Loader />
 						) : (
 							<button
